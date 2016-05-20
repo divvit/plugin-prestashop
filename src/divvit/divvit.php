@@ -56,7 +56,7 @@ class Divvit extends Module
         $this->confirmUninstall = $this->l('');
         
         $this->ps_versions_compliancy = array(
-            'min' => '1.6',
+            'min' => '1.5',
             'max' => _PS_VERSION_
         );
     }
