@@ -39,8 +39,8 @@
 					{foreach name=aussen item=product from=$ORDER_PRODUCTS}
 						{
 							id: "{$product['id']|escape:'htmlall':'UTF-8'}",
-							name: {$product['name']|escape:'htmlall':'UTF-8'},
-							category: [{$product['category']|escape:'htmlall':'UTF-8'}],
+							name: "{$product['name']|escape:'htmlall':'UTF-8'}",
+							category: "[{$product['category']|escape:'htmlall':'UTF-8'}]",
 							quantity: "{$product['quantity']|escape:'htmlall':'UTF-8'}",
 							price: "{$product['price']|escape:'htmlall':'UTF-8'}",
 							currency: "{$product['currency']|escape:'htmlall':'UTF-8'}",
