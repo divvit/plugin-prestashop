@@ -218,7 +218,8 @@ class Divvit extends Module
         /**
          * start the tracking
          */
-        $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $this->context->cookie->DV_TRACK . '';
+        // $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $this->context->cookie->DV_TRACK . '';
+        $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $_COOKIE['DV_TRACK'] . '';
         $tracking .= '&m={"cartId":"' . $this->context->cart->id . '"';
         $tracking .= ',"products":[';
         
