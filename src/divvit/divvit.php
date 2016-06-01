@@ -39,22 +39,22 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
-        
+
         /**
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
          */
         $this->bootstrap = true;
-        
+
         parent::__construct();
-        
+
         $this->displayName = $this->l('Divvit');
         $this->description = $this->l('Divvit tracking pixel integration for Prestashop.');
-        
+
         $this->confirmUninstall = $this->l('');
-        
+
         $this->ps_versions_compliancy = array(
             'min' => '1.5',
             'max' => _PS_VERSION_
@@ -68,14 +68,14 @@ class Divvit extends Module
     public function install()
     {
         Configuration::updateValue('DIVVIT_LIVE_MODE', false);
-        
+
         return parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation');
     }
 
     public function uninstall()
     {
         Configuration::deleteByName('DIVVIT_LIVE_MODE');
-        
+
         return parent::uninstall();
     }
 
@@ -90,11 +90,11 @@ class Divvit extends Module
         if (((bool) Tools::isSubmit('submitDivvitModule')) == true) {
             $this->postProcess();
         }
-        
+
         $this->context->smarty->assign('module_dir', $this->_path);
-        
+
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
-        
+
         return $output . $this->renderForm();
     }
 
@@ -104,24 +104,24 @@ class Divvit extends Module
     protected function renderForm()
     {
         $helper = new HelperForm();
-        
+
         $helper->show_toolbar = false;
         $helper->table = $this->table;
         $helper->module = $this;
         $helper->default_form_language = $this->context->language->id;
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
-        
+
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitDivvitModule';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        
+
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFormValues(), /* Add values for your inputs */
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id
         );
-        
+
         return $helper->generateForm(array(
             $this->getConfigForm()
         ));
@@ -171,7 +171,7 @@ class Divvit extends Module
     protected function postProcess()
     {
         $form_values = $this->getConfigFormValues();
-        
+
         foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
         }
@@ -201,7 +201,7 @@ class Divvit extends Module
     {
         $this->smarty->assign('DIVVIT_MERCHANT_ID', Configuration::get('DIVVIT_MERCHANT_ID'));
         $this->smarty->assign('ORDER_CONFIRMATION', false);
-        
+
         return $this->display(__FILE__, 'hookDisplayHeader.tpl');
     }
 
@@ -210,11 +210,11 @@ class Divvit extends Module
         if (! isset($this->context->cart)) {
             return;
         }
-        
+
         if (! Tools::getIsset('id_product')) {
             return;
         }
-        
+
         /**
          * start the tracking
          */
@@ -222,18 +222,18 @@ class Divvit extends Module
         $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $_COOKIE['DV_TRACK'] . '';
         $tracking .= '&m={"cartId":"' . $this->context->cart->id . '"';
         $tracking .= ',"products":[';
-        
+
         $currency = new Currency($this->context->currency->id);
         $currency_code = $currency->iso_code;
-        
+
         $tmpArray = array();
         foreach ($this->context->cart->getProducts() as $product) {
             $tmpArray[] = Tools::jsonEncode($this->buildProductArray($product, array(), $currency_code));
         }
         $tracking .= join(",", $tmpArray);
-        
+
         $tracking .= ']}';
-        
+
         Tools::file_get_contents($tracking);
     }
 
@@ -246,11 +246,11 @@ class Divvit extends Module
                 $cart = new Cart($order->id_cart);
                 $currency = new Currency($this->context->currency->id);
                 $currency_code = $currency->iso_code;
-                
+
                 foreach ($cart->getProducts() as $order_product) {
                     $order_products[] = $this->buildProductArray($order_product, array(), $currency_code);
                 }
-                
+
                 $order_details = array(
                     'id' => $order->id,
                     'total' => $order->total_paid,
@@ -261,7 +261,7 @@ class Divvit extends Module
                     'userMail' => $this->context->customer->email,
                     'userName' => $this->context->customer->firstname . ' ' . $this->context->customer->lastname
                 );
-                
+
                 // build the template
                 $this->smarty->assign('ORDER_CONFIRMATION', true);
                 $this->smarty->assign('ORDER_DETAILS', $order_details);
@@ -275,7 +275,7 @@ class Divvit extends Module
     public function buildProductArray($product, $extras, $currency_code = '')
     {
         $products = '';
-        
+
         // product ID
         $product_id = 0;
         if (! empty($product['id_product'])) {
@@ -285,7 +285,7 @@ class Divvit extends Module
                 $product_id = $product['id'];
             }
         }
-            
+
         // product QTY
         $product_qty = 1;
         if (isset($extras['qty'])) {
@@ -293,7 +293,7 @@ class Divvit extends Module
         } elseif (isset($product['cart_quantity'])) {
             $product_qty = $product['cart_quantity'];
         }
-            
+
             // build product array
         $products = array(
             'id' => $product_id,
