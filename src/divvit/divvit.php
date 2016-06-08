@@ -39,7 +39,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 
@@ -57,7 +57,8 @@ class Divvit extends Module
 
         $this->ps_versions_compliancy = array(
             'min' => '1.5',
-            'max' => _PS_VERSION_
+            // before 1.5.6.2 we cannot pass the current version as max, or the module will be rejected
+            'max' => (strpos(_PS_VERSION_,'1.5') === 0 ? '1.6' : _PS_VERSION_)
         );
     }
 
