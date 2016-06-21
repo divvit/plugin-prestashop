@@ -39,7 +39,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.1';
+        $this->version = '1.1.2';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 
@@ -219,10 +219,16 @@ class Divvit extends Module
         /**
          * start the tracking
          */
+
+        if (!isset($_COOKIE['DV_TRACK'])) {
+          return;
+        }
+
         // $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $this->context->cookie->DV_TRACK . '';
         $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $_COOKIE['DV_TRACK'] . '';
-        $tracking .= '&m={"cartId":"' . $this->context->cart->id . '"';
-        $tracking .= ',"products":[';
+
+        $metaInfo = '{"cartId":"' . $this->context->cart->id . '"';
+        $metaInfo .= ',"products":[';
 
         $currency = new Currency($this->context->currency->id);
         $currency_code = $currency->iso_code;
@@ -231,9 +237,11 @@ class Divvit extends Module
         foreach ($this->context->cart->getProducts() as $product) {
             $tmpArray[] = Tools::jsonEncode($this->buildProductArray($product, array(), $currency_code));
         }
-        $tracking .= join(",", $tmpArray);
+        $metaInfo .= join(",", $tmpArray);
 
-        $tracking .= ']}';
+        $metaInfo .= ']}';
+
+        $tracking .= '&m=' . urlencode($metaInfo);
 
         Tools::file_get_contents($tracking);
     }
@@ -298,8 +306,8 @@ class Divvit extends Module
             // build product array
         $products = array(
             'id' => $product_id,
-            'name' => urlencode($product['name']),
-            'category' => urlencode($product['category']),
+            'name' => $product['name'],
+            'category' => $product['category'],
             'quantity' => $product_qty,
             'price' => number_format($product['price'], '2'),
             'currency' => $currency_code
