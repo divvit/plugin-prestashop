@@ -3,9 +3,11 @@
 	<name>divvit</name>
 	<displayName><![CDATA[Divvit]]></displayName>
 	<version><![CDATA[1.1.2]]></version>
-	<description><![CDATA[ Divvit tracking pixel integration for Prestashop.]]></description>
+	<description><![CDATA[Divvit tracking pixel integration for Prestashop.]]></description>
 	<author><![CDATA[Divvit AB]]></author>
 	<tab><![CDATA[analytics_stats]]></tab>
+	<confirmUninstall><![CDATA[]]></confirmUninstall>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
+	<limited_countries></limited_countries>
 </module>

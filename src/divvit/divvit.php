@@ -28,6 +28,10 @@ if (! defined('_PS_VERSION_')) {
     exit();
 }
 
+require_once(_PS_MODULE_DIR_.'divvit/sql/DivvitQueryHelper.php');
+require_once(_PS_MODULE_DIR_.'divvit/sql/install.php');
+require_once(_PS_MODULE_DIR_.'divvit/sql/uninstall.php');
+
 class Divvit extends Module
 {
 
@@ -70,12 +74,16 @@ class Divvit extends Module
     {
         Configuration::updateValue('DIVVIT_LIVE_MODE', false);
 
+        DivvitInstallModule::install();
+
         return parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation');
     }
 
     public function uninstall()
     {
         Configuration::deleteByName('DIVVIT_LIVE_MODE');
+
+        DivvitUninstallModule::uninstall();
 
         return parent::uninstall();
     }
@@ -200,8 +208,11 @@ class Divvit extends Module
 
     public function hookDisplayHeader()
     {
+        //Save cookie of current customer to db
+        if ($this->context->customer->id) {
+            DivvitQueryHelper::saveCustomerCookie($this->context->customer->id);
+        }
         $this->smarty->assign('DIVVIT_MERCHANT_ID', Configuration::get('DIVVIT_MERCHANT_ID'));
-        $this->smarty->assign('ORDER_CONFIRMATION', false);
 
         return $this->display(__FILE__, 'hookDisplayHeader.tpl');
     }
@@ -272,11 +283,10 @@ class Divvit extends Module
                 );
 
                 // build the template
-                $this->smarty->assign('ORDER_CONFIRMATION', true);
                 $this->smarty->assign('ORDER_DETAILS', $order_details);
                 $this->smarty->assign('ORDER_PRODUCTS', $order_products);
                 $this->smarty->assign('TEMPX', $order);
-                return $this->display(__FILE__, 'hookDisplayHeader.tpl');
+                return $this->display(__FILE__, 'hookDisplayAfterOrderCreated.tpl');
             }
         }
     }
