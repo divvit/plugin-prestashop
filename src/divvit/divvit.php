@@ -76,7 +76,7 @@ class Divvit extends Module
 
         DivvitInstallModule::install();
 
-        return parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation');
+        return parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation') && $this->registerHook('moduleRoutes');
     }
 
     public function uninstall()
@@ -185,7 +185,19 @@ class Divvit extends Module
             Configuration::updateValue($key, Tools::getValue($key));
         }
     }
-
+    public function hookModuleRoutes() {
+        return array(
+            'divvit-orders' => array(
+                'controller' => 'default',
+                'rule' => 'divvitOrders',
+                'keywords' => array(),
+                'params' => array(
+                    'fc' => 'module',
+                    'module' => 'divvit',
+                )
+            ),
+        );
+    }
     /**
      * Add the CSS & JavaScript files you want to be loaded in the BO.
      */
