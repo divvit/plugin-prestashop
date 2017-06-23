@@ -1,6 +1,9 @@
 <?php
 
 class DivvitQueryHelper extends ObjectModel {
+
+    const LIMIT_ORDER = 100;
+
     public static function saveCustomerCookie($customerId) {
         if (isset($_COOKIE['DV_TRACK'])) {
             $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . $customerId;
@@ -24,7 +27,7 @@ class DivvitQueryHelper extends ObjectModel {
         }
     }
     public static function getOrders($afterId) {
-        $sql = "SELECT id_order FROM "._DB_PREFIX_."orders WHERE id_order > {$afterId} ORDER BY id_order DESC";
+        $sql = "SELECT id_order FROM "._DB_PREFIX_."orders WHERE id_order > {$afterId} ORDER BY id_order DESC LIMIT " . self::LIMIT_ORDER;
         $orderArr = Db::getInstance()->executeS($sql);
         $orderIds = array();
         foreach ($orderArr as $oa) {
