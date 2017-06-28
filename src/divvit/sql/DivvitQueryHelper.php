@@ -3,6 +3,7 @@
 class DivvitQueryHelper extends ObjectModel {
 
     const LIMIT_ORDER = 100;
+    const DIVVIT_TRACKER_URL = "https://tracker.staging.divvit.com/";
 
     public static function saveCustomerCookie($customerId) {
         if (isset($_COOKIE['DV_TRACK'])) {
@@ -68,5 +69,32 @@ class DivvitQueryHelper extends ObjectModel {
             $dataReturn[] = $orderData;
         }
         return $dataReturn;
+    }
+
+    public static function getDivvitAuthToken() {
+        $url = self::DIVVIT_TRACKER_URL . "auth/register";
+        $params = array(
+            'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
+            'url' =>   Tools::getHttpHost(true) . __PS_BASE_URI__ . "divvitOrders"
+        );
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen(json_encode($params)))
+        );
+
+        $resultStr = curl_exec($ch);
+        $result = json_decode($resultStr, true);
+        if ($result AND isset($result['accessToken'])) {
+            Configuration::updateValue('DIVVIT_ACCESS_TOKEN', $result['accessToken']);
+        } else {
+            $oldToken = Configuration::get('DIVVIT_ACCESS_TOKEN');
+            if (!$oldToken) {
+                Configuration::updateValue('DIVVIT_ACCESS_TOKEN', "invalid");
+            }
+        }
     }
 }
