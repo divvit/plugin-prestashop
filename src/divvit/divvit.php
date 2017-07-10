@@ -34,7 +34,6 @@ require_once(_PS_MODULE_DIR_.'divvit/sql/uninstall.php');
 
 class Divvit extends Module
 {
-
     protected $config_form = false;
 
     protected static $products = array();
@@ -76,7 +75,11 @@ class Divvit extends Module
 
         DivvitInstallModule::install();
 
-        return parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation');
+        $installResult = parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation') && $this->registerHook('moduleRoutes');
+        if ($installResult) {
+            DivvitQueryHelper::getDivvitAuthToken();
+        }
+        return $installResult;
     }
 
     public function uninstall()
@@ -180,12 +183,24 @@ class Divvit extends Module
     protected function postProcess()
     {
         $form_values = $this->getConfigFormValues();
-
         foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
         }
+        DivvitQueryHelper::getDivvitAuthToken();
     }
-
+    public function hookModuleRoutes() {
+        return array(
+            'divvit-orders' => array(
+                'controller' => 'default',
+                'rule' => 'divvitOrders',
+                'keywords' => array(),
+                'params' => array(
+                    'fc' => 'module',
+                    'module' => 'divvit',
+                )
+            ),
+        );
+    }
     /**
      * Add the CSS & JavaScript files you want to be loaded in the BO.
      */
