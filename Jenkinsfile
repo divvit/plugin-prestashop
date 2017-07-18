@@ -6,7 +6,7 @@ node {
   if (env.BRANCH_NAME == 'master') {
     def version = sh(script: './version.sh', returnStdout: true).trim()
     withCredentials([
-      usernamePassword(credentialsId: '31a94cb8-2f21-4e58-a9e5-bc4aa3ee72a4' usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')
+      usernamePassword(credentialsId: '31a94cb8-2f21-4e58-a9e5-bc4aa3ee72a4', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')
     ]) {
 
     }
