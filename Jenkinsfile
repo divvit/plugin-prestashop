@@ -5,7 +5,7 @@ node {
   stage 'Build'
   if (env.BRANCH_NAME == 'master') {
     sh './build.sh'
-    archiveArtifacts artifacts: 'build/*.zip', fingerprint: true
-    ls './build'
+    // archiveArtifacts artifacts: 'build/*.zip', fingerprint: true
+    sh 'ls ./build'
   }
 }
