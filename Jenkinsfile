@@ -13,10 +13,8 @@ node {
     // sh "git config user.name andrei"
     sh "git tag -d ${version}"
     sh "git tag ${version} -m 'Version ${version}'"
-    withCredentials([
-      usernamePassword(credentialsId: '31a94cb8-2f21-4e58-a9e5-bc4aa3ee72a4', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')
-    ]) {
-      sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/divvit/plugin-prestashop.git --tags"
+    sshagent(['jenkins']) {
+      sh "git push --tags"
     }
   }
 }
