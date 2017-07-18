@@ -4,10 +4,11 @@ node {
 
   stage 'Build'
   if (env.BRANCH_NAME == 'master') {
-    env.VERSION = sh('./version.sh')
+    def version = sh('./version.sh')
     sh './build.sh'
     sh 'ls ./build'
-    sh 'git tag ${env.VERSION}'
+    echo 'Current version: ${version}'
+    sh 'git tag ${version}'
     sh 'git push --tags'
   }
 }
