@@ -1,22 +1,10 @@
-pipeline {
-  agent any
+node {
+  stage 'Checkout'
+  checkout scm
 
-  stages {
-    stage('Build') {
-      steps {
-        sh './build.sh'
-        archiveArtifacts artifacts: 'build/*.zip'
-      }
-    }
-
-    stage('Deploy') {
-      when {
-        expression {
-          BRANCH_NAME == 'master'
-        }
-        echo 'Deploy'
-      }
-    }
-
+  stage 'Build'
+  if (env.BRANCH_NAME == 'master') {
+    sh './build.sh'
+    archiveArtifacts artifacts: 'build/*.zip', fingerprint: true
   }
 }
