@@ -4,7 +4,7 @@ node {
 
   stage 'Build'
   if (env.BRANCH_NAME == 'master') {
-    def version = sh(script: './version.sh', returnStdout: true)
+    def version = sh(script: './version.sh', returnStdout: true).trim()
     echo "Current version: ${version}"
     sh './build.sh'
     sh 'ls ./build'
