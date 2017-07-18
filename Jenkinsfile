@@ -6,5 +6,6 @@ node {
   if (env.BRANCH_NAME == 'master') {
     sh './build.sh'
     archiveArtifacts artifacts: 'build/*.zip', fingerprint: true
+    ls './build'
   }
 }
