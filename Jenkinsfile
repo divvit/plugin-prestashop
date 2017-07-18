@@ -4,8 +4,10 @@ node {
 
   stage 'Build'
   if (env.BRANCH_NAME == 'master') {
+    env.VERSION = sh('./version.sh')
     sh './build.sh'
-    // archiveArtifacts artifacts: 'build/*.zip', fingerprint: true
     sh 'ls ./build'
+    sh 'git tag ${env.VERSION}'
+    sh 'git push --tags'
   }
 }
