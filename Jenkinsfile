@@ -13,7 +13,7 @@ node {
     // sh "git config user.name andrei"
     sh "git tag -d ${version}"
     sh "git tag ${version} -m 'Version ${version}'"
-    sshagent(['jenkins']) {
+    sshagent(['8275b8bf-bb3c-4456-88f1-0b2bdd9954d2']) {
       sh "git push --tags"
     }
   }
