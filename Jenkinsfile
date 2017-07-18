@@ -7,8 +7,8 @@ node {
     def version = sh('./version.sh')
     sh './build.sh'
     sh 'ls ./build'
-    echo 'Current version: ${version}'
-    sh 'git tag ${version}'
-    sh 'git push --tags'
+    echo "Current version: ${version}"
+    sh "git tag ${version}"
+    sh "git push --tags"
   }
 }
