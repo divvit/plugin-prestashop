@@ -1,24 +1,35 @@
 <?php
+/**
+ * @author DivvitAB
+ * @copyright DivvitAB
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
-class DivvitQueryHelper extends ObjectModel {
+class DivvitQueryHelper extends ObjectModel
+{
 
     const LIMIT_ORDER = 100;
     const DIVVIT_TRACKER_URL = "https://tracker.staging.divvit.com/";
 
-    public static function saveCustomerCookie($customerId) {
-        if (isset($_COOKIE['DV_TRACK'])) {
+    public static function saveCustomerCookie($customerId)
+    {
+        $cookieDivvit = self::getDivvitCookie();
+        if ($cookieDivvit) {
             $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . $customerId;
             $data = Db::getInstance()->getRow($sql);
             if (!$data) {
-                $sql = "INSERT INTO "._DB_PREFIX_."divvit_customer_cookie SET customer_id = {$customerId}, cookie_data = '".$_COOKIE['DV_TRACK']."', updated_at = NOW(), created_at = NOW()";
+                $sql = "INSERT INTO "._DB_PREFIX_."divvit_customer_cookie SET "
+                    ."customer_id = {$customerId}, cookie_data = '".$cookieDivvit."', updated_at = NOW(), created_at = NOW()";
                 Db::getInstance()->execute($sql);
             } else {
-                $sql = "UPDATE " . _DB_PREFIX_ . "divvit_customer_cookie SET updated_at = NOW(), cookie_data = '".$_COOKIE['DV_TRACK']."' WHERE customer_id = " . $customerId;
+                $sql = "UPDATE " . _DB_PREFIX_ . "divvit_customer_cookie SET "
+                    ."updated_at = NOW(), cookie_data = '".$cookieDivvit."' WHERE customer_id = " . $customerId;
                 Db::getInstance()->execute($sql);
             }
         }
     }
-    public static function getCustomerCookie($customerId) {
+    public static function getCustomerCookie($customerId)
+    {
         $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . $customerId;
         $data = Db::getInstance()->getRow($sql);
         if (!$data) {
@@ -27,8 +38,10 @@ class DivvitQueryHelper extends ObjectModel {
             return $data['cookie_data'];
         }
     }
-    public static function getOrders($afterId) {
-        $sql = "SELECT id_order FROM "._DB_PREFIX_."orders WHERE id_order > {$afterId} ORDER BY id_order DESC LIMIT " . self::LIMIT_ORDER;
+    public static function getOrders($afterId)
+    {
+        $sql = "SELECT id_order FROM "._DB_PREFIX_."orders "
+            ."WHERE id_order > {$afterId} ORDER BY id_order DESC LIMIT " . self::LIMIT_ORDER;
         $orderArr = Db::getInstance()->executeS($sql);
         $orderIds = array();
         foreach ($orderArr as $oa) {
@@ -71,7 +84,8 @@ class DivvitQueryHelper extends ObjectModel {
         return $dataReturn;
     }
 
-    public static function getDivvitAuthToken() {
+    public static function getDivvitAuthToken()
+    {
         $url = self::DIVVIT_TRACKER_URL . "auth/register";
         $params = array(
             'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
@@ -82,19 +96,28 @@ class DivvitQueryHelper extends ObjectModel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen(json_encode($params)))
-        );
+            'Content-Type: application/json',
+            'Content-Length: ' . Tools::strlen(json_encode($params))
+        ));
 
         $resultStr = curl_exec($ch);
         $result = json_decode($resultStr, true);
-        if ($result AND isset($result['accessToken'])) {
+        if ($result and isset($result['accessToken'])) {
             Configuration::updateValue('DIVVIT_ACCESS_TOKEN', $result['accessToken']);
         } else {
             $oldToken = Configuration::get('DIVVIT_ACCESS_TOKEN');
             if (!$oldToken) {
                 Configuration::updateValue('DIVVIT_ACCESS_TOKEN', "invalid");
             }
+        }
+    }
+    public static function getDivvitCookie()
+    {
+        $realCookie = ${'_COOKIE'};
+        if (isset($realCookie['DV_TRACK'])) {
+            return $realCookie['DV_TRACK'];
+        } else {
+            return false;
         }
     }
 }

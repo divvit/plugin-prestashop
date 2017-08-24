@@ -1,12 +1,12 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: vokimnguyen
- * Date: 6/20/17
- * Time: 10:37 PM
+ * @author DivvitAB
+ * @copyright DivvitAB
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
-class DivvitDefaultModuleFrontController extends ModuleFrontControllerCore {
+class DivvitDefaultModuleFrontController extends ModuleFrontControllerCore
+{
     public function initContent()
     {
         $accessToken = $this->validateToken();
@@ -31,18 +31,19 @@ class DivvitDefaultModuleFrontController extends ModuleFrontControllerCore {
         if (function_exists('getallheaders')) {
             return getallheaders();
         } else {
-            $headers = array ();
-            foreach ($_SERVER as $name => $value)
-            {
-                if (substr($name, 0, 5) == 'HTTP_')
-                {
-                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            $headers = array();
+            foreach ($_SERVER as $name => $value) {
+                if (Tools::substr($name, 0, 5) == 'HTTP_') {
+                    $key = str_replace(' ', '-', ucwords(Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5)))));
+                    $headers[$key] = $value;
                 }
             }
             return $headers;
         }
     }
-    private function validateToken() {
+
+    private function validateToken()
+    {
         $accessToken = Configuration::get('DIVVIT_ACCESS_TOKEN');
         if (!$accessToken) {
             DivvitQueryHelper::getDivvitAuthToken();
