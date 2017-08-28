@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2015 PrestaShop
+ * 2015-2017 Divvit AB
  *
  * NOTICE OF LICENSE
  *
@@ -42,7 +42,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.2';
+        $this->version = '1.1.4';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 
@@ -61,7 +61,7 @@ class Divvit extends Module
         $this->ps_versions_compliancy = array(
             'min' => '1.5',
             // before 1.5.6.2 we cannot pass the current version as max, or the module will be rejected
-            'max' => (strpos(_PS_VERSION_,'1.5') === 0 ? '1.6' : _PS_VERSION_)
+            'max' => (strpos(_PS_VERSION_, '1.5') === 0 ? '1.6' : _PS_VERSION_)
         );
     }
 
@@ -75,7 +75,9 @@ class Divvit extends Module
 
         DivvitInstallModule::install();
 
-        $installResult = parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader') && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave') && $this->registerHook('orderConfirmation') && $this->registerHook('moduleRoutes');
+        $installResult = parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader')
+            && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave')
+            && $this->registerHook('orderConfirmation') && $this->registerHook('moduleRoutes');
         if ($installResult) {
             DivvitQueryHelper::getDivvitAuthToken();
         }
@@ -125,7 +127,9 @@ class Divvit extends Module
 
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitDivvitModule';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $adminModuleLink = $this->context->link->getAdminLink('AdminModules', false);
+        $helper->currentIndex = $adminModuleLink . '&configure='
+            . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $helper->tpl_vars = array(
@@ -188,7 +192,8 @@ class Divvit extends Module
         }
         DivvitQueryHelper::getDivvitAuthToken();
     }
-    public function hookModuleRoutes() {
+    public function hookModuleRoutes()
+    {
         return array(
             'divvit-orders' => array(
                 'controller' => 'default',
@@ -245,13 +250,13 @@ class Divvit extends Module
         /**
          * start the tracking
          */
-
-        if (!isset($_COOKIE['DV_TRACK'])) {
-          return;
+        $cookieDivvit = DivvitQueryHelper::getDivvitCookie();
+        if (!$cookieDivvit) {
+            return;
         }
 
-        // $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $this->context->cookie->DV_TRACK . '';
-        $tracking = 'https://tracker.divvit.com/track.js?i=' . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $_COOKIE['DV_TRACK'] . '';
+        $tracking = 'https://tracker.divvit.com/track.js?i='
+            . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $cookieDivvit . '';
 
         $metaInfo = '{"cartId":"' . $this->context->cart->id . '"';
         $metaInfo .= ',"products":[';
