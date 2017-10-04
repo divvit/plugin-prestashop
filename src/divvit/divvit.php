@@ -42,7 +42,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.4';
+        $this->version = '1.1.5';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 

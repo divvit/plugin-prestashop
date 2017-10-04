@@ -9,7 +9,7 @@ class DivvitQueryHelper extends ObjectModel
 {
 
     const LIMIT_ORDER = 100;
-    const DIVVIT_TRACKER_URL = "https://tracker.staging.divvit.com/";
+    const DIVVIT_TRACKER_URL = "https://tracker.divvit.com/";
 
     public static function saveCustomerCookie($customerId)
     {
@@ -83,15 +83,16 @@ class DivvitQueryHelper extends ObjectModel
         }
         return $dataReturn;
     }
-
     public static function getDivvitAuthToken()
     {
         $url = self::DIVVIT_TRACKER_URL . "auth/register";
+        $moduleUrl = Context::getContext()->link->getModuleLink('divvit', 'default');
         $params = array(
             'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
-            'url' =>   Tools::getHttpHost(true) . __PS_BASE_URI__ . "divvitOrders"
+            'url' => $moduleUrl
         );
         $ch = curl_init($url);
+        Logger::addLog('Divvit: registering shop on Divvit ' . $moduleUrl, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -99,8 +100,11 @@ class DivvitQueryHelper extends ObjectModel
             'Content-Type: application/json',
             'Content-Length: ' . Tools::strlen(json_encode($params))
         ));
-
         $resultStr = curl_exec($ch);
+        if (!$resultStr) {
+          Logger::addLog('Divvit: error registering (' . curl_error($ch) . ')', 2);
+        }
+
         $result = json_decode($resultStr, true);
         if ($result and isset($result['accessToken'])) {
             Configuration::updateValue('DIVVIT_ACCESS_TOKEN', $result['accessToken']);
@@ -110,6 +114,7 @@ class DivvitQueryHelper extends ObjectModel
                 Configuration::updateValue('DIVVIT_ACCESS_TOKEN', "invalid");
             }
         }
+        curl_close($ch);
     }
     public static function getDivvitCookie()
     {
