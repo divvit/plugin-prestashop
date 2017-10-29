@@ -273,14 +273,17 @@ class Divvit extends Module
         $metaInfo .= ']}';
 
         $tracking .= '&m=' . urlencode($metaInfo);
-
         Tools::file_get_contents($tracking);
     }
 
     public function hookOrderConfirmation($params)
     {
+
         $order = $params['objOrder'];
+        p($order);
         if (Validate::isLoadedObject($order) && $order->getCurrentState() != (int) Configuration::get('PS_OS_ERROR')) {
+            echo "test2";
+                exit();
             if ($order->id_customer == $this->context->cookie->id_customer) {
                 $order_products = array();
                 $cart = new Cart($order->id_cart);
@@ -301,7 +304,6 @@ class Divvit extends Module
                     'userMail' => $this->context->customer->email,
                     'userName' => $this->context->customer->firstname . ' ' . $this->context->customer->lastname
                 );
-
                 // build the template
                 $this->smarty->assign('ORDER_DETAILS', $order_details);
                 $this->smarty->assign('ORDER_PRODUCTS', $order_products);
@@ -309,6 +311,8 @@ class Divvit extends Module
                 return $this->display(__FILE__, 'hookDisplayAfterOrderCreated.tpl');
             }
         }
+        echo "test1";
+        exit();
     }
 
     public function buildProductArray($product, $extras, $currency_code = '')
@@ -333,7 +337,7 @@ class Divvit extends Module
             $product_qty = $product['cart_quantity'];
         }
 
-            // build product array
+        // build product array
         $products = array(
             'id' => $product_id,
             'name' => $product['name'],

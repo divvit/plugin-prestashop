@@ -7,7 +7,6 @@
 
 class DivvitQueryHelper extends ObjectModel
 {
-
     const LIMIT_ORDER = 100;
     const DIVVIT_TRACKER_URL = "https://tracker.divvit.com/";
 
@@ -15,22 +14,22 @@ class DivvitQueryHelper extends ObjectModel
     {
         $cookieDivvit = self::getDivvitCookie();
         if ($cookieDivvit) {
-            $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . $customerId;
+            $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . pSQL($customerId);
             $data = Db::getInstance()->getRow($sql);
             if (!$data) {
                 $sql = "INSERT INTO "._DB_PREFIX_."divvit_customer_cookie SET "
-                    ."customer_id = {$customerId}, cookie_data = '".$cookieDivvit."', updated_at = NOW(), created_at = NOW()";
+                    ."customer_id = ".pSQL($customerId).", cookie_data = '".$cookieDivvit."', updated_at = NOW(), created_at = NOW()";
                 Db::getInstance()->execute($sql);
             } else {
                 $sql = "UPDATE " . _DB_PREFIX_ . "divvit_customer_cookie SET "
-                    ."updated_at = NOW(), cookie_data = '".$cookieDivvit."' WHERE customer_id = " . $customerId;
+                    ."updated_at = NOW(), cookie_data = '".pSQL($cookieDivvit)."' WHERE customer_id = " . pSQL($customerId);
                 Db::getInstance()->execute($sql);
             }
         }
     }
     public static function getCustomerCookie($customerId)
     {
-        $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . $customerId;
+        $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . pSQL($customerId);
         $data = Db::getInstance()->getRow($sql);
         if (!$data) {
             return "";
@@ -41,7 +40,7 @@ class DivvitQueryHelper extends ObjectModel
     public static function getOrders($afterId)
     {
         $sql = "SELECT id_order FROM "._DB_PREFIX_."orders "
-            ."WHERE id_order > {$afterId} ORDER BY id_order DESC LIMIT " . self::LIMIT_ORDER;
+            ."WHERE id_order > ".pSQL($afterId)." ORDER BY id_order DESC LIMIT " . self::LIMIT_ORDER;
         $orderArr = Db::getInstance()->executeS($sql);
         $orderIds = array();
         foreach ($orderArr as $oa) {
@@ -102,7 +101,7 @@ class DivvitQueryHelper extends ObjectModel
         ));
         $resultStr = curl_exec($ch);
         if (!$resultStr) {
-          Logger::addLog('Divvit: error registering (' . curl_error($ch) . ')', 2);
+            Logger::addLog('Divvit: error registering (' . curl_error($ch) . ')', 2);
         }
 
         $result = json_decode($resultStr, true);
