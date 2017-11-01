@@ -18,11 +18,13 @@ class DivvitQueryHelper extends ObjectModel
             $data = Db::getInstance()->getRow($sql);
             if (!$data) {
                 $sql = "INSERT INTO "._DB_PREFIX_."divvit_customer_cookie SET "
-                    ."customer_id = ".pSQL($customerId).", cookie_data = '".$cookieDivvit."', updated_at = NOW(), created_at = NOW()";
+                    ."customer_id = ".pSQL($customerId).", "
+                    ."cookie_data = '".$cookieDivvit."', updated_at = NOW(), created_at = NOW()";
                 Db::getInstance()->execute($sql);
             } else {
                 $sql = "UPDATE " . _DB_PREFIX_ . "divvit_customer_cookie SET "
-                    ."updated_at = NOW(), cookie_data = '".pSQL($cookieDivvit)."' WHERE customer_id = " . pSQL($customerId);
+                    ."updated_at = NOW(), cookie_data = '".pSQL($cookieDivvit)."' "
+                    ."WHERE customer_id = " . pSQL($customerId);
                 Db::getInstance()->execute($sql);
             }
         }
