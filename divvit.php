@@ -42,7 +42,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.5';
+        $this->version = '1.1.6';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 
@@ -300,7 +300,7 @@ class Divvit extends Module
                     'userMail' => $this->context->customer->email,
                     'userName' => $this->context->customer->firstname . ' ' . $this->context->customer->lastname
                 );
-                
+
                 // build the template
                 $this->smarty->assign('ORDER_DETAILS', $order_details);
                 $this->smarty->assign('ORDER_PRODUCTS', $order_products);
