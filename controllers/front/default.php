@@ -34,7 +34,8 @@ class DivvitDefaultModuleFrontController extends ModuleFrontControllerCore
             $headers = array();
             foreach ($_SERVER as $name => $value) {
                 if (Tools::substr($name, 0, 5) == 'HTTP_') {
-                    $key = str_replace(' ', '-', ucwords(Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5)))));
+                    $formattedText = ucwords(Tools::strtolower(str_replace('_', ' ', Tools::substr($name, 5))));
+                    $key = str_replace(' ', '-', $formattedText);
                     $headers[$key] = $value;
                 }
             }

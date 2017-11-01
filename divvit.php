@@ -42,7 +42,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.5';
+        $this->version = '1.1.6';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 
@@ -273,7 +273,6 @@ class Divvit extends Module
         $metaInfo .= ']}';
 
         $tracking .= '&m=' . urlencode($metaInfo);
-
         Tools::file_get_contents($tracking);
     }
 
@@ -333,7 +332,7 @@ class Divvit extends Module
             $product_qty = $product['cart_quantity'];
         }
 
-            // build product array
+        // build product array
         $products = array(
             'id' => $product_id,
             'name' => $product['name'],

@@ -1,5 +1,5 @@
-How to build:
+# Divvit Prestashop Plugin
 
-cd /prestashop/src
+Prestashop plugin that can be used to integrate Divvit easily into your Prestashop installation.
 
-zip -r ../dist/divvit-prestashop-plugin-x.x.x.zip divvit -x "*.DS_Store"
+In order for plugin to work you need to have Divvit account, you can create one for free at http://divvit.com/signup
