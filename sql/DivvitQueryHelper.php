@@ -8,8 +8,23 @@
 class DivvitQueryHelper extends ObjectModel
 {
     const LIMIT_ORDER = 100;
-    const DIVVIT_TRACKER_URL = "https://tracker.divvit.com/";
 
+    public static function getDivvitUrl($type = '')
+    {
+        if (_PS_BASE_URL_ == 'http://prestashop.localhost') {
+            if ($type == 'tag') {
+                return 'http://tag.divvit.dev';
+            } else {
+                return 'http://tracker.divvit.dev';
+            }
+        } else {
+            if ($type == 'tag') {
+                return 'https://tag.divvit.com';
+            } else {
+                return 'https://tracker.divvit.com';
+            }
+        }
+    }
     public static function saveCustomerCookie($customerId)
     {
         $cookieDivvit = self::getDivvitCookie();
@@ -86,7 +101,7 @@ class DivvitQueryHelper extends ObjectModel
     }
     public static function getDivvitAuthToken()
     {
-        $url = self::DIVVIT_TRACKER_URL . "auth/register";
+        $url = self::getDivvitUrl('tracker') . "auth/register";
         $moduleUrl = Context::getContext()->link->getModuleLink('divvit', 'default');
         $params = array(
             'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
