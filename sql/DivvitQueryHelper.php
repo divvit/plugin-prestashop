@@ -11,11 +11,11 @@ class DivvitQueryHelper extends ObjectModel
 
     public static function getDivvitUrl($type = '')
     {
-        if (_PS_BASE_URL_ == 'http://prestashop.localhost') {
+        if (getenv('DIVVIT_TRACKING_URL') != '') {
             if ($type == 'tag') {
-                return 'http://tag.divvit.dev';
+                return getenv('DIVVIT_TAG_URL');
             } else {
-                return 'http://tracker.divvit.dev';
+                return getenv('DIVVIT_TRACKING_URL');
             }
         } else {
             if ($type == 'tag') {

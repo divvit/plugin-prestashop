@@ -233,7 +233,9 @@ class Divvit extends Module
             DivvitQueryHelper::saveCustomerCookie($this->context->customer->id);
         }
         $this->smarty->assign('DIVVIT_MERCHANT_ID', Configuration::get('DIVVIT_MERCHANT_ID'));
-        $this->smarty->assign('PS_BASE_URL', _PS_BASE_URL_);
+
+        //Check if Divvit tag url exist in env
+        $this->smarty->assign('DIVVIT_TAG_URL', DivvitQueryHelper::getDivvitUrl('tag'));
 
         return $this->display(__FILE__, 'hookDisplayHeader.tpl');
     }
