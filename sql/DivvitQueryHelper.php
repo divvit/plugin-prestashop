@@ -11,15 +11,15 @@ class DivvitQueryHelper extends ObjectModel
 
     public static function getDivvitUrl($type = '')
     {
-        if (getenv('DIVVIT_TRACKING_URL') != '') {
-            if ($type == 'tag') {
+        if ($type == 'tag') {
+            if (getenv('DIVVIT_TAG_URL') != '') {
                 return getenv('DIVVIT_TAG_URL');
             } else {
-                return getenv('DIVVIT_TRACKING_URL');
+                return 'https://tag.divvit.com';
             }
         } else {
-            if ($type == 'tag') {
-                return 'https://tag.divvit.com';
+            if (getenv('DIVVIT_TRACKING_URL') != '') {
+                return getenv('DIVVIT_TRACKING_URL');
             } else {
                 return 'https://tracker.divvit.com';
             }

@@ -282,8 +282,10 @@ class Divvit extends Module
     public function hookOrderConfirmation($params)
     {
         if (isset($params['objOrder'])) {
+            //For PS 1.6v and below
             $order = $params['objOrder'];
         } else {
+            //For PS 1.7v
             $order = $params['order'];
         }
         
