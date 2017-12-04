@@ -45,6 +45,7 @@ class Divvit extends Module
         $this->version = '1.1.6';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
+        $this->module_key = '2e236afa721b6106b1c1888cdd31de3c';
 
         /**
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
