@@ -38,6 +38,10 @@ class Divvit extends Module
 
     protected static $products = array();
 
+    public static $TRACKER_URL;
+    public static $APP_URL;
+    public static $TAG_URL;
+
     public function __construct()
     {
         $this->name = 'divvit';
@@ -46,6 +50,11 @@ class Divvit extends Module
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
         $this->module_key = '2e236afa721b6106b1c1888cdd31de3c';
+        $this->secure_key = Tools::encrypt($this->name);
+
+        self::$TRACKER_URL = getenv('DIVVIT_TRACKER_URL') ?: 'https://tracker.divvit.com';
+        self::$APP_URL = getenv('DIVVIT_APP_URL') ?: 'https://app.divvit.com';
+        self::$TAG_URL = getenv('DIVVIT_TAG_URL') ?: 'https://tag.divvit.com';
 
         /**
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
@@ -106,7 +115,20 @@ class Divvit extends Module
             $this->postProcess();
         }
 
+        $currency = Currency::getCurrency(Configuration::get('PS_CURRENCY_DEFAULT'));
+        $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').Configuration::get('PS_SHOP_DOMAIN');
+
         $this->context->smarty->assign('module_dir', $this->_path);
+        $this->context->smarty->assign('app_url', self::$APP_URL);
+        $this->context->smarty->assign('email', $this->context->employee->email);
+        $this->context->smarty->assign('firstname', $this->context->employee->firstname);
+        $this->context->smarty->assign('lastname', $this->context->employee->lastname);
+        $this->context->smarty->assign('url', $url);
+        $this->context->smarty->assign('currency', $currency['iso_code']);
+        $this->context->smarty->assign('timezone', Configuration::get('PS_TIMEZONE'));
+        $this->context->smarty->assign('secure_key', $this->secure_key);
+        $this->context->smarty->assign('divvit_access_token', Configuration::get('DIVVIT_ACCESS_TOKEN'));
+        $this->context->smarty->assign('divvit_frontendId', Configuration::get('DIVVIT_MERCHANT_ID'));
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
 
@@ -193,6 +215,7 @@ class Divvit extends Module
         }
         DivvitQueryHelper::getDivvitAuthToken();
     }
+
     public function hookModuleRoutes()
     {
         return array(
@@ -207,6 +230,7 @@ class Divvit extends Module
             ),
         );
     }
+
     /**
      * Add the CSS & JavaScript files you want to be loaded in the BO.
      */
@@ -234,6 +258,7 @@ class Divvit extends Module
             DivvitQueryHelper::saveCustomerCookie($this->context->customer->id);
         }
         $this->smarty->assign('DIVVIT_MERCHANT_ID', Configuration::get('DIVVIT_MERCHANT_ID'));
+        $this->smarty->assign('DIVVIT_TAG_URL', self::$TAG_URL);
 
         return $this->display(__FILE__, 'hookDisplayHeader.tpl');
     }
@@ -256,7 +281,7 @@ class Divvit extends Module
             return;
         }
 
-        $tracking = 'https://tracker.divvit.com/track.js?i='
+        $tracking = self::$TRACKER_URL.'/track.js?i='
             . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $cookieDivvit . '';
 
         $metaInfo = '{"cartId":"' . $this->context->cart->id . '"';

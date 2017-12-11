@@ -23,12 +23,21 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/back.css" rel="stylesheet" type="text/css" media="all" />
+<script>
+	var DIVVIT_PLUGIN_SECURE_KEY = "{$secure_key}";
+	var DIVVIT_APP_URL = "{$app_url}";
+</script>
+<script type="text/javascript" src="{$module_dir|escape:'htmlall':'UTF-8'}views/js/back.js"></script>
+
 <div class="panel">
 	<h3><i class="icon icon-credit-card"></i> {l s='Divvit' mod='divvit'}</h3>
-	<p>
-		<strong>{l s='Here is the Divvit PrestaShop Integration module!' mod='divvit'}</strong><br />
-		{l s='Easily integrate the divvit code into your PrestaShop.' mod='divvit'}<br />
-	</p>
+	{if $divvit_access_token}
+		<iframe src="{$app_url}/prestashop?embedded=prestashop&email={$email}&frontendId={$divvit_frontendId}&__trackerToken={$divvit_access_token}" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
+	{else}
+		<iframe src="{$app_url}/prestashop?embedded=prestashop&platform=prestashop&email={$email}&firstName={$firstname}&lastName={$lastname}&url={$url}&currency={$currency}&timezone={$timezone|escape:'url'}&industry=other" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
+	{/if}
+
 </div>
 
 <div class="panel">
@@ -36,7 +45,7 @@
 	<p>
 		&raquo; {l s='You can get a documentation to use this module' mod='divvit'} :
 		<ul>
-			<li><a href="https://tag.divvit.com" target="_blank">{l s='Divvit Integration' mod='divvit'}</a></li>
+			<li><a href="https://www.divvit.com/tags" target="_blank">{l s='Divvit Integration' mod='divvit'}</a></li>
 		</ul>
 	</p>
 </div>

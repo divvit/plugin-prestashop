@@ -25,3 +25,28 @@
 * Don't forget to prefix your containers with your own identifier
 * to avoid any conflicts with others containers.
 */
+
+window.addEventListener('message', function(event) {
+  if (event.origin !== window.DIVVIT_APP_URL) return;
+  var data = event.data.split(':')
+  var key = data[0]
+  var value = data[1]
+
+  switch (key) {
+    case 'height':
+      var divvitIframe = document.getElementById('divvit_iframe')
+      divvitIframe.setAttribute('height', value)
+      break
+
+    case 'frontendId':
+      $.post('/modules/divvit/ajax_divvit.php', {
+        secure_key: window.DIVVIT_PLUGIN_SECURE_KEY,
+        action: 'updateFrontendId',
+        frontendId: value
+      })
+      break
+
+    default:
+      return
+  }
+}, false)
