@@ -85,7 +85,6 @@ class Divvit extends Module
             } catch (Exception $e) {
                 return false;
             }
-
         }
         return $installResult;
     }
