@@ -14,24 +14,25 @@ class DivvitQueryHelper extends ObjectModel
     {
         $cookieDivvit = self::getDivvitCookie();
         if ($cookieDivvit) {
-            $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . pSQL($customerId);
+            $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = ".pSQL($customerId);
             $data = Db::getInstance()->getRow($sql);
             if (!$data) {
                 $sql = "INSERT INTO "._DB_PREFIX_."divvit_customer_cookie SET "
                     ."customer_id = ".pSQL($customerId).", "
-                    ."cookie_data = '".$cookieDivvit."', updated_at = NOW(), created_at = NOW()";
+                    ."cookie_data = '".pSQL($cookieDivvit)."', updated_at = NOW(), created_at = NOW()";
                 Db::getInstance()->execute($sql);
             } else {
-                $sql = "UPDATE " . _DB_PREFIX_ . "divvit_customer_cookie SET "
+                $sql = "UPDATE "._DB_PREFIX_."divvit_customer_cookie SET "
                     ."updated_at = NOW(), cookie_data = '".pSQL($cookieDivvit)."' "
-                    ."WHERE customer_id = " . pSQL($customerId);
+                    ."WHERE customer_id = ".pSQL($customerId);
                 Db::getInstance()->execute($sql);
             }
         }
     }
+
     public static function getCustomerCookie($customerId)
     {
-        $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = " . pSQL($customerId);
+        $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = ".pSQL($customerId);
         $data = Db::getInstance()->getRow($sql);
         if (!$data) {
             return "";
@@ -39,10 +40,11 @@ class DivvitQueryHelper extends ObjectModel
             return $data['cookie_data'];
         }
     }
+
     public static function getOrders($afterId)
     {
         $sql = "SELECT id_order FROM "._DB_PREFIX_."orders "
-            ."WHERE id_order > ".pSQL($afterId)." ORDER BY id_order DESC LIMIT " . self::LIMIT_ORDER;
+            ."WHERE id_order > ".pSQL($afterId)." ORDER BY id_order DESC LIMIT ".self::LIMIT_ORDER;
         $orderArr = Db::getInstance()->executeS($sql);
         $orderIds = array();
         foreach ($orderArr as $oa) {
@@ -62,7 +64,7 @@ class DivvitQueryHelper extends ObjectModel
                 'shipping' => $order->total_shipping,
                 'currency' => $currency->iso_code,
                 'customer' => array(
-                    'name' => $customer->firstname . " " . $customer->lastname,
+                    'name' => $customer->firstname." ".$customer->lastname,
                     'id' => $customer->id,
                     'idFields' => array(
                         'email' => $customer->email
@@ -84,26 +86,28 @@ class DivvitQueryHelper extends ObjectModel
         }
         return $dataReturn;
     }
+
     public static function getDivvitAuthToken()
     {
-        $url = self::DIVVIT_TRACKER_URL . "auth/register";
+        $url = self::DIVVIT_TRACKER_URL."auth/register";
         $moduleUrl = Context::getContext()->link->getModuleLink('divvit', 'default');
         $params = array(
             'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
             'url' => $moduleUrl
         );
         $ch = curl_init($url);
-        Logger::addLog('Divvit: registering shop on Divvit ' . $moduleUrl, 1);
+        Logger::addLog('Divvit: registering shop on Divvit '.$moduleUrl, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'Content-Length: ' . Tools::strlen(json_encode($params))
+            'Content-Length: '.Tools::strlen(json_encode($params))
         ));
         $resultStr = curl_exec($ch);
         if (!$resultStr) {
-            Logger::addLog('Divvit: error registering (' . curl_error($ch) . ')', 2);
+            Logger::addLog('Divvit: error registering ('.curl_error($ch).')', 2);
+            throw new Exception('Error registering plugin on Divvit. Check log for more information.');
         }
 
         $result = json_decode($resultStr, true);
@@ -117,6 +121,7 @@ class DivvitQueryHelper extends ObjectModel
         }
         curl_close($ch);
     }
+
     public static function getDivvitCookie()
     {
         $realCookie = ${'_COOKIE'};
