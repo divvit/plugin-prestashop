@@ -14,17 +14,17 @@ class DivvitQueryHelper extends ObjectModel
     {
         $cookieDivvit = self::getDivvitCookie();
         if ($cookieDivvit) {
-            $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = ".pSQL($customerId);
+            $sql = "SELECT id FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = ".intval($customerId);
             $data = Db::getInstance()->getRow($sql);
             if (!$data) {
                 $sql = "INSERT INTO "._DB_PREFIX_."divvit_customer_cookie SET "
-                    ."customer_id = ".pSQL($customerId).", "
+                    ."customer_id = ".intval($customerId).", "
                     ."cookie_data = '".pSQL($cookieDivvit)."', updated_at = NOW(), created_at = NOW()";
                 Db::getInstance()->execute($sql);
             } else {
                 $sql = "UPDATE "._DB_PREFIX_."divvit_customer_cookie SET "
                     ."updated_at = NOW(), cookie_data = '".pSQL($cookieDivvit)."' "
-                    ."WHERE customer_id = ".pSQL($customerId);
+                    ."WHERE customer_id = ".intval($customerId);
                 Db::getInstance()->execute($sql);
             }
         }
@@ -32,7 +32,7 @@ class DivvitQueryHelper extends ObjectModel
 
     public static function getCustomerCookie($customerId)
     {
-        $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = ".pSQL($customerId);
+        $sql = "SELECT * FROM "._DB_PREFIX_."divvit_customer_cookie WHERE customer_id = ".intval($customerId);
         $data = Db::getInstance()->getRow($sql);
         if (!$data) {
             return "";
@@ -44,7 +44,7 @@ class DivvitQueryHelper extends ObjectModel
     public static function getOrders($afterId)
     {
         $sql = "SELECT id_order FROM "._DB_PREFIX_."orders "
-            ."WHERE id_order > ".pSQL($afterId)." ORDER BY id_order DESC LIMIT ".self::LIMIT_ORDER;
+            ."WHERE id_order > ".intval($afterId)." ORDER BY id_order DESC LIMIT ".self::LIMIT_ORDER;
         $orderArr = Db::getInstance()->executeS($sql);
         $orderIds = array();
         foreach ($orderArr as $oa) {
