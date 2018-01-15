@@ -235,6 +235,9 @@ class Divvit extends Module
         }
         $this->smarty->assign('DIVVIT_MERCHANT_ID', Configuration::get('DIVVIT_MERCHANT_ID'));
 
+        //Check if Divvit tag url exist in env
+        $this->smarty->assign('DIVVIT_TAG_URL', DivvitQueryHelper::getDivvitUrl('tag'));
+
         return $this->display(__FILE__, 'hookDisplayHeader.tpl');
     }
 
@@ -256,7 +259,7 @@ class Divvit extends Module
             return;
         }
 
-        $tracking = 'https://tracker.divvit.com/track.js?i='
+        $tracking = DivvitQueryHelper::getDivvitUrl('tracker').'?i='
             . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $cookieDivvit . '';
 
         $metaInfo = '{"cartId":"' . $this->context->cart->id . '"';
@@ -279,7 +282,14 @@ class Divvit extends Module
 
     public function hookOrderConfirmation($params)
     {
-        $order = $params['objOrder'];
+        if (isset($params['objOrder'])) {
+            //For PS 1.6v and below
+            $order = $params['objOrder'];
+        } else {
+            //For PS 1.7v
+            $order = $params['order'];
+        }
+        
         if (Validate::isLoadedObject($order) && $order->getCurrentState() != (int) Configuration::get('PS_OS_ERROR')) {
             if ($order->id_customer == $this->context->cookie->id_customer) {
                 $order_products = array();
