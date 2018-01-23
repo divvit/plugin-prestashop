@@ -24,10 +24,9 @@
 *}
 
 <script type="text/javascript">
-
-		{literal}
-			!function(){var t=window.divvit=window.divvit||[];if(t.DV_VERSION="prestashop-1.1.8",t.init=function(e){if(!t.bInitialized){var i=document.createElement("script");i.setAttribute("type","text/javascript"),i.setAttribute("async",!0),i.setAttribute("src",{/literal}"{$DIVVIT_TAG_URL}{literal}/tag.js?id="+e);var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(i,n)}},!t.bInitialized){t.functions=["customer","pageview","cartAdd","cartRemove","cartUpdated","orderPlaced","nlSubscribed","dv"];for(var e=0;e<t.functions.length;e++){var i=t.functions[e];t[i]=function(e){return function(){return Array.prototype.unshift.call(arguments,e),t.push(arguments),t}}(i)}}}();
-		{/literal}
-		divvit.init('{$DIVVIT_MERCHANT_ID|escape:'htmlall':'UTF-8'}');
-		divvit.pageview();
+	{literal}
+		!function(){var t=window.divvit=window.divvit||[];if(t.DV_VERSION="prestashop-1.1.8",t.init=function(e){if(!t.bInitialized){var i=document.createElement("script");i.setAttribute("type","text/javascript"),i.setAttribute("async",!0),i.setAttribute("src",{/literal}"{$DIVVIT_TAG_URL}{literal}/tag.js?id="+e);var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(i,n)}},!t.bInitialized){t.functions=["customer","pageview","cartAdd","cartRemove","cartUpdated","orderPlaced","nlSubscribed","dv"];for(var e=0;e<t.functions.length;e++){var i=t.functions[e];t[i]=function(e){return function(){return Array.prototype.unshift.call(arguments,e),t.push(arguments),t}}(i)}}}();
+	{/literal}
+	divvit.init('{$DIVVIT_MERCHANT_ID|escape:'htmlall':'UTF-8'}');
+	divvit.pageview();
 </script>
