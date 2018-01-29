@@ -23,20 +23,19 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div class="panel">
-	<h3><i class="icon icon-credit-card"></i> {l s='Divvit' mod='divvit'}</h3>
-	<p>
-		<strong>{l s='Here is the Divvit PrestaShop Integration module!' mod='divvit'}</strong><br />
-		{l s='Easily integrate the divvit code into your PrestaShop.' mod='divvit'}<br />
-	</p>
-</div>
+{if $is_saved}
+	<div class="alert alert-success">
+		{l s='Settings updated' mod='divvit'}
+	</div>
+{/if}
+{if $error_message!=''}
+	<div class="alert alert-danger">
+		{$error_message|escape:'htmlall':'UTF-8'}
+	</div>
+{/if}
 
 <div class="panel">
-	<h3><i class="icon icon-tags"></i> {l s='Documentation' mod='divvit'}</h3>
-	<p>
-		&raquo; {l s='You can get a documentation to use this module' mod='divvit'} :
-		<ul>
-			<li><a href="https://tag.divvit.com" target="_blank">{l s='Divvit Integration' mod='divvit'}</a></li>
-		</ul>
-	</p>
+	<h3><i class="icon icon-credit-card"></i> {l s='Divvit' mod='divvit'}</h3>
+	<p>Divvit is an intelligent ecommerce analytics platform that empowers online retailers, by providing real-time data that helps save money, ensure efficient spending and increase revenue.</p>
+	<p>Get started by registering account at <a href="https://app.divvit.com/signup">https://app.divvit.com/signup</a></p>
 </div>
