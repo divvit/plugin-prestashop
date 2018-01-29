@@ -104,7 +104,7 @@ class DivvitQueryHelper extends ObjectModel
 
     public static function getDivvitAuthToken()
     {
-        $url = self::getDivvitUrl('tracker') . "auth/register";
+        $url = self::getDivvitUrl('tracker') . "/auth/register";
         $moduleUrl = Context::getContext()->link->getModuleLink('divvit', 'default');
         $params = array(
             'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
