@@ -42,7 +42,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.6';
+        $this->version = '1.1.8';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
 
@@ -236,6 +236,7 @@ class Divvit extends Module
 
         //Check if Divvit tag url exist in env
         $this->smarty->assign('DIVVIT_TAG_URL', DivvitQueryHelper::getDivvitUrl('tag'));
+        $this->smarty->assign('DIVVIT_VERSION', $this->version);
 
         return $this->display(__FILE__, 'hookDisplayHeader.tpl');
     }
