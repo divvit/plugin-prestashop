@@ -42,9 +42,10 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.6';
+        $this->version = '1.1.8';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
+        $this->module_key = '2e236afa721b6106b1c1888cdd31de3c';
 
         /**
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
@@ -79,7 +80,11 @@ class Divvit extends Module
             && $this->registerHook('displayHeader') && $this->registerHook('actionCartSave')
             && $this->registerHook('orderConfirmation') && $this->registerHook('moduleRoutes');
         if ($installResult) {
-            DivvitQueryHelper::getDivvitAuthToken();
+            try {
+                DivvitQueryHelper::getDivvitAuthToken();
+            } catch (Exception $e) {
+                return false;
+            }
         }
         return $installResult;
     }
@@ -98,14 +103,25 @@ class Divvit extends Module
      */
     public function getContent()
     {
+        $isSaved = false;
+        $errorMessage = '';
         /**
          * If values have been submitted in the form, process.
          */
         if (((bool) Tools::isSubmit('submitDivvitModule')) == true) {
-            $this->postProcess();
+            try {
+                $this->postProcess();
+                $isSaved = true;
+            } catch (Exception $e) {
+                $errorMessage = $e->getMessage();
+            }
         }
 
-        $this->context->smarty->assign('module_dir', $this->_path);
+        $this->context->smarty->assign(array(
+          'module_dir' => $this->_path,
+          'is_saved' => $isSaved,
+          'error_message' => $errorMessage
+        ));
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
 
