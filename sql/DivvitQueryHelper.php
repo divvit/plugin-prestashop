@@ -8,8 +8,23 @@
 class DivvitQueryHelper extends ObjectModel
 {
     const LIMIT_ORDER = 100;
-    const DIVVIT_TRACKER_URL = "https://tracker.divvit.com/";
 
+    public static function getDivvitUrl($type = '')
+    {
+        if ($type == 'tag') {
+            if (getenv('DIVVIT_TAG_URL') != '') {
+                return getenv('DIVVIT_TAG_URL');
+            } else {
+                return 'https://tag.divvit.com';
+            }
+        } else {
+            if (getenv('DIVVIT_TRACKING_URL') != '') {
+                return getenv('DIVVIT_TRACKING_URL');
+            } else {
+                return 'https://tracker.divvit.com';
+            }
+        }
+    }
     public static function saveCustomerCookie($customerId)
     {
         $cookieDivvit = self::getDivvitCookie();
@@ -89,7 +104,7 @@ class DivvitQueryHelper extends ObjectModel
 
     public static function getDivvitAuthToken()
     {
-        $url = self::DIVVIT_TRACKER_URL."auth/register";
+        $url = self::getDivvitUrl('tracker') . "/auth/register";
         $moduleUrl = Context::getContext()->link->getModuleLink('divvit', 'default');
         $params = array(
             'frontendId' => Configuration::get("DIVVIT_MERCHANT_ID"),
