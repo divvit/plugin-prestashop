@@ -42,7 +42,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.8';
+        $this->version = '1.1.9';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
         $this->module_key = '2e236afa721b6106b1c1888cdd31de3c';
@@ -305,7 +305,7 @@ class Divvit extends Module
             //For PS 1.7v
             $order = $params['order'];
         }
-        
+
         if (Validate::isLoadedObject($order) && $order->getCurrentState() != (int) Configuration::get('PS_OS_ERROR')) {
             if ($order->id_customer == $this->context->cookie->id_customer) {
                 $order_products = array();
