@@ -25,16 +25,16 @@
 
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/back.css" rel="stylesheet" type="text/css" media="all" />
 <script>
-	var DIVVIT_PLUGIN_SECURE_KEY = "{$secure_key}";
-	var DIVVIT_APP_URL = "{$app_url}";
+	var DIVVIT_PLUGIN_SECURE_KEY = "{$secure_key|escape:'javascript':'UTF-8'}";
+	var DIVVIT_APP_URL = "{$app_url|escape:'javascript':'UTF-8'}";
 </script>
 <script type="text/javascript" src="{$module_dir|escape:'htmlall':'UTF-8'}views/js/back.js"></script>
 
 <div class="panel">
 	<h3><i class="icon icon-credit-card"></i> {l s='Divvit' mod='divvit'}</h3>
 	{if $divvit_access_token}
-		<iframe src="{$app_url}/prestashop?embedded=prestashop&email={$email}&frontendId={$divvit_frontendId}&__trackerToken={$divvit_access_token}" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
+		<iframe src="{$app_url|escape:'htmlall':'UTF-8'}/prestashop?embedded=prestashop&email={$email|escape:'htmlall':'UTF-8'}&frontendId={$divvit_frontendId|escape:'htmlall':'UTF-8'}&__trackerToken={$divvit_access_token|escape:'htmlall':'UTF-8'}" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
 	{else}
-		<iframe src="{$app_url}/prestashop?embedded=prestashop&platform=prestashop&email={$email}&firstName={$firstname}&lastName={$lastname}&url={$url}&currency={$currency}&timezone={$timezone|escape:'url'}&industry=other" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
+		<iframe src="{$app_url|escape:'htmlall':'UTF-8'}/prestashop?embedded=prestashop&platform=prestashop&email={$email|escape:'htmlall':'UTF-8'}&firstName={$firstname|escape:'htmlall':'UTF-8'}&lastName={$lastname|escape:'htmlall':'UTF-8'}&url={$url|escape:'htmlall':'UTF-8'}&currency={$currency|escape:'htmlall':'UTF-8'}&timezone={$timezone|escape:'url'|escape:'htmlall':'UTF-8'}&industry=other" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
 	{/if}
 </div>

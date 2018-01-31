@@ -122,7 +122,7 @@ class DivvitQueryHelper extends ObjectModel
         } else {
             $oldToken = Configuration::get('DIVVIT_ACCESS_TOKEN');
             if (!$oldToken) {
-                Configuration::updateValue('DIVVIT_ACCESS_TOKEN', NULL);
+                Configuration::updateValue('DIVVIT_ACCESS_TOKEN', null);
             }
         }
         curl_close($ch);
