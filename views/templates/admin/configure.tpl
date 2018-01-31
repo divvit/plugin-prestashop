@@ -37,15 +37,4 @@
 	{else}
 		<iframe src="{$app_url}/prestashop?embedded=prestashop&platform=prestashop&email={$email}&firstName={$firstname}&lastName={$lastname}&url={$url}&currency={$currency}&timezone={$timezone|escape:'url'}&industry=other" width="100%" height="600" border="0" id="divvit_iframe"></iframe>
 	{/if}
-
-</div>
-
-<div class="panel">
-	<h3><i class="icon icon-tags"></i> {l s='Documentation' mod='divvit'}</h3>
-	<p>
-		&raquo; {l s='You can get a documentation to use this module' mod='divvit'} :
-		<ul>
-			<li><a href="https://www.divvit.com/tags" target="_blank">{l s='Divvit Integration' mod='divvit'}</a></li>
-		</ul>
-	</p>
 </div>

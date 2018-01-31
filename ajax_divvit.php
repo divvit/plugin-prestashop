@@ -13,3 +13,9 @@ if (Tools::getValue('action') == 'updateFrontendId' && Tools::getValue('frontend
 	  Configuration::updateValue('DIVVIT_MERCHANT_ID', Tools::getValue('frontendId'));
 	  DivvitQueryHelper::getDivvitAuthToken();
 }
+
+if (Tools::getValue('action') == 'resetFrontendId')
+{
+		Configuration::deleteByName('DIVVIT_MERCHANT_ID');
+		Configuration::deleteByName('DIVVIT_ACCESS_TOKEN');
+}

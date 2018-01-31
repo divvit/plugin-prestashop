@@ -45,6 +45,12 @@ window.addEventListener('message', function(event) {
         frontendId: value
       })
       break
+    case 'resetFrontendId':
+      $.post('/modules/divvit/ajax_divvit.php', {
+        secure_key: window.DIVVIT_PLUGIN_SECURE_KEY,
+        action: 'resetFrontendId'
+      })
+      break
 
     default:
       return

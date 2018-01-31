@@ -46,7 +46,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.1.6';
+        $this->version = '1.2.0';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
         $this->module_key = '2e236afa721b6106b1c1888cdd31de3c';
@@ -81,7 +81,6 @@ class Divvit extends Module
      */
     public function install()
     {
-        Configuration::updateValue('DIVVIT_LIVE_MODE', false);
 
         DivvitInstallModule::install();
 
@@ -96,7 +95,8 @@ class Divvit extends Module
 
     public function uninstall()
     {
-        Configuration::deleteByName('DIVVIT_LIVE_MODE');
+        Configuration::deleteByName('DIVVIT_ACCESS_TOKEN');
+        Configuration::deleteByName('DIVVIT_MERCHANT_ID');
 
         DivvitUninstallModule::uninstall();
 
@@ -132,7 +132,7 @@ class Divvit extends Module
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
 
-        return $output . $this->renderForm();
+        return $output;
     }
 
     /**
