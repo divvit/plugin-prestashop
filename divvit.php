@@ -1,6 +1,6 @@
 <?php
 /**
- * 2015-2017 Divvit AB
+ * 2015-2017 Divvit AB.
  *
  * NOTICE OF LICENSE
  *
@@ -23,14 +23,14 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-
-if (! defined('_PS_VERSION_')) {
+ 
+if (!defined('_PS_VERSION_')) {
     exit();
 }
 
-require_once(_PS_MODULE_DIR_.'divvit/sql/DivvitQueryHelper.php');
-require_once(_PS_MODULE_DIR_.'divvit/sql/install.php');
-require_once(_PS_MODULE_DIR_.'divvit/sql/uninstall.php');
+require_once _PS_MODULE_DIR_.'divvit/sql/DivvitQueryHelper.php';
+require_once _PS_MODULE_DIR_.'divvit/sql/install.php';
+require_once _PS_MODULE_DIR_.'divvit/sql/uninstall.php';
 
 class Divvit extends Module
 {
@@ -56,7 +56,7 @@ class Divvit extends Module
         self::$APP_URL = getenv('DIVVIT_APP_URL') ?: 'https://app.divvit.com';
         self::$TAG_URL = getenv('DIVVIT_TAG_URL') ?: 'https://tag.divvit.com';
 
-        /**
+        /*
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
          */
         $this->bootstrap = true;
@@ -71,17 +71,16 @@ class Divvit extends Module
         $this->ps_versions_compliancy = array(
             'min' => '1.5',
             // before 1.5.6.2 we cannot pass the current version as max, or the module will be rejected
-            'max' => (strpos(_PS_VERSION_, '1.5') === 0 ? '1.7' : _PS_VERSION_)
+            'max' => (strpos(_PS_VERSION_, '1.5') === 0 ? '1.7' : _PS_VERSION_),
         );
     }
 
     /**
      * Don't forget to create update methods if needed:
-     * http://doc.prestashop.com/display/PS16/Enabling+the+Auto-Update
+     * http://doc.prestashop.com/display/PS16/Enabling+the+Auto-Update.
      */
     public function install()
     {
-
         DivvitInstallModule::install();
 
         $installResult = parent::install() && $this->registerHook('header') && $this->registerHook('backOfficeHeader')
@@ -94,6 +93,7 @@ class Divvit extends Module
                 return false;
             }
         }
+
         return $installResult;
     }
 
@@ -108,13 +108,13 @@ class Divvit extends Module
     }
 
     /**
-     * Load the configuration form
+     * Load the configuration form.
      */
     public function getContent()
     {
         $isSaved = false;
         $errorMessage = '';
-        /**
+        /*
          * If values have been submitted in the form, process.
          */
         if (((bool) Tools::isSubmit('submitDivvitModule')) == true) {
@@ -125,25 +125,34 @@ class Divvit extends Module
                 $errorMessage = $e->getMessage();
             }
         }
-
-        $currency = Currency::getCurrency(Configuration::get('PS_CURRENCY_DEFAULT'));
-        $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').Configuration::get('PS_SHOP_DOMAIN');
-
+        switch (Shop::getContext()) {
+            case 1:
+                $issite = 1;
+                break;
+            default:
+                $issite = 0;
+                break;
+        }
+        DivvitQueryHelper::getDivvitAuthToken();
+        $currency = $this->context->currency->iso_code;
+        $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').'
+        '.$this->context->shop->domain.$this->context->shop->physical_uri.$this->context->shop->virtual_uri;
+        
         $this->context->smarty->assign('module_dir', $this->_path);
         $this->context->smarty->assign('app_url', self::$APP_URL);
         $this->context->smarty->assign('email', $this->context->employee->email);
         $this->context->smarty->assign('firstname', $this->context->employee->firstname);
         $this->context->smarty->assign('lastname', $this->context->employee->lastname);
         $this->context->smarty->assign('url', $url);
-        $this->context->smarty->assign('currency', $currency['iso_code']);
+        $this->context->smarty->assign('currency', $currency);
         $this->context->smarty->assign('timezone', Configuration::get('PS_TIMEZONE'));
         $this->context->smarty->assign('secure_key', $this->secure_key);
         $this->context->smarty->assign('divvit_access_token', Configuration::get('DIVVIT_ACCESS_TOKEN'));
         $this->context->smarty->assign('divvit_frontendId', Configuration::get('DIVVIT_MERCHANT_ID'));
         $this->context->smarty->assign('is_saved', $isSaved);
         $this->context->smarty->assign('error_message', $errorMessage);
-
-        $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
+        $this->context->smarty->assign('issite', $issite);
+        $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
 
         return $output;
     }
@@ -164,18 +173,18 @@ class Divvit extends Module
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitDivvitModule';
         $adminModuleLink = $this->context->link->getAdminLink('AdminModules', false);
-        $helper->currentIndex = $adminModuleLink . '&configure='
-            . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->currentIndex = $adminModuleLink.'&configure='
+            .$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFormValues(), /* Add values for your inputs */
             'languages' => $this->context->controller->getLanguages(),
-            'id_language' => $this->context->language->id
+            'id_language' => $this->context->language->id,
         );
 
         return $helper->generateForm(array(
-            $this->getConfigForm()
+            $this->getConfigForm(),
         ));
     }
 
@@ -188,7 +197,7 @@ class Divvit extends Module
             'form' => array(
                 'legend' => array(
                     'title' => $this->l('Settings'),
-                    'icon' => 'icon-cogs'
+                    'icon' => 'icon-cogs',
                 ),
                 'input' => array(
                     array(
@@ -197,13 +206,13 @@ class Divvit extends Module
                         'prefix' => '<i class="icon icon-user"></i>',
                         'desc' => $this->l('Enter a valid Divvit Frontend ID'),
                         'name' => 'DIVVIT_MERCHANT_ID',
-                        'label' => $this->l('Frontend ID')
-                    )
+                        'label' => $this->l('Frontend ID'),
+                    ),
                 ),
                 'submit' => array(
-                    'title' => $this->l('Save')
-                )
-            )
+                    'title' => $this->l('Save'),
+                ),
+            ),
         );
     }
 
@@ -213,7 +222,7 @@ class Divvit extends Module
     protected function getConfigFormValues()
     {
         return array(
-            'DIVVIT_MERCHANT_ID' => Configuration::get('DIVVIT_MERCHANT_ID', '')
+            'DIVVIT_MERCHANT_ID' => Configuration::get('DIVVIT_MERCHANT_ID', ''),
         );
     }
 
@@ -239,7 +248,7 @@ class Divvit extends Module
                 'params' => array(
                     'fc' => 'module',
                     'module' => 'divvit',
-                )
+                ),
             ),
         );
     }
@@ -250,8 +259,8 @@ class Divvit extends Module
     public function hookBackOfficeHeader()
     {
         if (Tools::getValue('module_name') == $this->name) {
-            $this->context->controller->addJS($this->_path . 'views/js/back.js');
-            $this->context->controller->addCSS($this->_path . 'views/css/back.css');
+            $this->context->controller->addJS($this->_path.'views/js/back.js');
+            $this->context->controller->addCSS($this->_path.'views/css/back.css');
         }
     }
 
@@ -260,8 +269,8 @@ class Divvit extends Module
      */
     public function hookHeader()
     {
-        $this->context->controller->addJS($this->_path . '/views/js/front.js');
-        $this->context->controller->addCSS($this->_path . '/views/css/front.css');
+        $this->context->controller->addJS($this->_path.'/views/js/front.js');
+        $this->context->controller->addCSS($this->_path.'/views/css/front.css');
     }
 
     public function hookDisplayHeader()
@@ -270,7 +279,8 @@ class Divvit extends Module
         if ($this->context->customer->id) {
             DivvitQueryHelper::saveCustomerCookie($this->context->customer->id);
         }
-        $this->smarty->assign('DIVVIT_MERCHANT_ID', Configuration::get('DIVVIT_MERCHANT_ID'));
+        $divvit_frontendId = Configuration::get('DIVVIT_MERCHANT_ID');
+        $this->smarty->assign('DIVVIT_MERCHANT_ID', $divvit_frontendId[$this->context->shop->id]);
         $this->smarty->assign('DIVVIT_TAG_URL', self::$TAG_URL);
         $this->smarty->assign('DIVVIT_VERSION', $this->version);
 
@@ -279,26 +289,26 @@ class Divvit extends Module
 
     public function hookActionCartSave()
     {
-        if (! isset($this->context->cart)) {
+        if (!isset($this->context->cart)) {
             return;
         }
 
-        if (! Tools::getIsset('id_product')) {
+        if (!Tools::getIsset('id_product')) {
             return;
         }
 
-        /**
+        /*
          * start the tracking
          */
         $cookieDivvit = DivvitQueryHelper::getDivvitCookie();
         if (!$cookieDivvit) {
             return;
         }
-
+        $divvit_frontendId = Configuration::get('DIVVIT_MERCHANT_ID');
         $tracking = self::$TRACKER_URL.'/track.js?i='
-            . Configuration::get('DIVVIT_MERCHANT_ID') . '&e=cart&v=1.0.0&uid=' . $cookieDivvit . '';
+            .$divvit_frontendId[$this->context->shop->id].'&e=cart&v=1.0.0&uid='.$cookieDivvit.'';
 
-        $metaInfo = '{"cartId":"' . $this->context->cart->id . '"';
+        $metaInfo = '{"cartId":"'.$this->context->cart->id.'"';
         $metaInfo .= ',"products":[';
 
         $currency = new Currency($this->context->currency->id);
@@ -308,11 +318,11 @@ class Divvit extends Module
         foreach ($this->context->cart->getProducts() as $product) {
             $tmpArray[] = Tools::jsonEncode($this->buildProductArray($product, array(), $currency_code));
         }
-        $metaInfo .= join(",", $tmpArray);
+        $metaInfo .= implode(',', $tmpArray);
 
         $metaInfo .= ']}';
 
-        $tracking .= '&m=' . urlencode($metaInfo);
+        $tracking .= '&m='.urlencode($metaInfo);
         Tools::file_get_contents($tracking);
     }
 
@@ -345,13 +355,14 @@ class Divvit extends Module
                     'totalProductsNet' => $order->total_products,
                     'payment' => $order->payment,
                     'userMail' => $this->context->customer->email,
-                    'userName' => $this->context->customer->firstname . ' ' . $this->context->customer->lastname
+                    'userName' => $this->context->customer->firstname.' '.$this->context->customer->lastname,
                 );
 
                 // build the template
                 $this->smarty->assign('ORDER_DETAILS', $order_details);
                 $this->smarty->assign('ORDER_PRODUCTS', $order_products);
                 $this->smarty->assign('TEMPX', $order);
+
                 return $this->display(__FILE__, 'hookDisplayAfterOrderCreated.tpl');
             }
         }
@@ -363,10 +374,10 @@ class Divvit extends Module
 
         // product ID
         $product_id = 0;
-        if (! empty($product['id_product'])) {
+        if (!empty($product['id_product'])) {
             $product_id = $product['id_product'];
         } else {
-            if (! empty($product['id'])) {
+            if (!empty($product['id'])) {
                 $product_id = $product['id'];
             }
         }
@@ -386,8 +397,9 @@ class Divvit extends Module
             'category' => $product['category'],
             'quantity' => $product_qty,
             'price' => number_format($product['price'], '2'),
-            'currency' => $currency_code
+            'currency' => $currency_code,
         );
+
         return $products;
     }
 }
