@@ -1,6 +1,6 @@
 <?php
 /**
-* 2015-2017 Divvit AB
+* 2015-2017 Divvit AB.
 *
 * NOTICE OF LICENSE
 *

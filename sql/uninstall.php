@@ -4,7 +4,7 @@
  * @copyright DivvitAB
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
-
+ 
 class DivvitUninstallModule
 {
     public static function uninstall()

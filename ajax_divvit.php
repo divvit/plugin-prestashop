@@ -1,6 +1,6 @@
 <?php
 /**
- * 2015-2017 Divvit AB
+ * 2015-2017 Divvit AB.
  *
  * NOTICE OF LICENSE
  *
@@ -23,10 +23,10 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
-
-include_once('../../config/config.inc.php');
-include_once('../../init.php');
-include_once('divvit.php');
+ 
+include_once '../../config/config.inc.php';
+include_once '../../init.php';
+include_once 'divvit.php';
 
 $divvit = new Divvit();
 
@@ -37,13 +37,12 @@ if (!Tools::isSubmit('secure_key') ||
     die(1);
 }
 
-
 if (Tools::getValue('action') == 'updateFrontendId' && Tools::getValue('frontendId')) {
     Configuration::updateValue('DIVVIT_MERCHANT_ID', Tools::getValue('frontendId'));
     DivvitQueryHelper::getDivvitAuthToken();
 }
 
 if (Tools::getValue('action') == 'resetFrontendId') {
-    Configuration::deleteByName('DIVVIT_MERCHANT_ID');
-    Configuration::deleteByName('DIVVIT_ACCESS_TOKEN');
+    Configuration::updateValue('DIVVIT_MERCHANT_ID', null);
+    Configuration::updateValue('DIVVIT_ACCESS_TOKEN', null);
 }

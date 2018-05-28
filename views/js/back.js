@@ -31,6 +31,7 @@ window.addEventListener('message', function(event) {
   var data = event.data.split(':')
   var key = data[0]
   var value = data[1]
+  console.log(event.data);
 
   switch (key) {
     case 'height':
@@ -39,16 +40,16 @@ window.addEventListener('message', function(event) {
       break
 
     case 'frontendId':
-      $.post('/modules/divvit/ajax_divvit.php', {
+      $.post(window.SHOPURL+'modules/divvit/ajax_divvit.php', {
         secure_key: window.DIVVIT_PLUGIN_SECURE_KEY,
         action: 'updateFrontendId',
-        frontendId: value
+        frontendId: value,
       })
       break
     case 'resetFrontendId':
-      $.post('/modules/divvit/ajax_divvit.php', {
+      $.post(window.SHOPURL+'modules/divvit/ajax_divvit.php', {
         secure_key: window.DIVVIT_PLUGIN_SECURE_KEY,
-        action: 'resetFrontendId'
+        action: 'resetFrontendId',
       })
       break
 
