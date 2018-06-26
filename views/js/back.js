@@ -31,7 +31,6 @@ window.addEventListener('message', function(event) {
   var data = event.data.split(':')
   var key = data[0]
   var value = data[1]
-  console.log(event.data);
 
   switch (key) {
     case 'height':
