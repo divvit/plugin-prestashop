@@ -23,7 +23,7 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
- 
+
 if (!defined('_PS_VERSION_')) {
     exit();
 }
@@ -46,7 +46,7 @@ class Divvit extends Module
     {
         $this->name = 'divvit';
         $this->tab = 'analytics_stats';
-        $this->version = '1.2.1';
+        $this->version = '1.2.2';
         $this->author = 'Divvit AB';
         $this->need_instance = 1;
         $this->module_key = '2e236afa721b6106b1c1888cdd31de3c';
@@ -127,17 +127,19 @@ class Divvit extends Module
         }
         switch (Shop::getContext()) {
             case 1:
-                $issite = 1;
+                $isShopContext = 1;
                 break;
             default:
-                $issite = 0;
+                $isShopContext = 0;
                 break;
         }
         DivvitQueryHelper::getDivvitAuthToken();
         $currency = $this->context->currency->iso_code;
-        $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').'
-        '.$this->context->shop->domain.$this->context->shop->physical_uri.$this->context->shop->virtual_uri;
-        
+        $url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://')
+            .$this->context->shop->domain
+            .$this->context->shop->physical_uri
+            .$this->context->shop->virtual_uri;
+
         $this->context->smarty->assign('module_dir', $this->_path);
         $this->context->smarty->assign('app_url', self::$APP_URL);
         $this->context->smarty->assign('email', $this->context->employee->email);
@@ -151,7 +153,7 @@ class Divvit extends Module
         $this->context->smarty->assign('divvit_frontendId', Configuration::get('DIVVIT_MERCHANT_ID'));
         $this->context->smarty->assign('is_saved', $isSaved);
         $this->context->smarty->assign('error_message', $errorMessage);
-        $this->context->smarty->assign('issite', $issite);
+        $this->context->smarty->assign('isShopContext', $isShopContext);
         $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
 
         return $output;

@@ -23,7 +23,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-{if $issite}
+{if $isShopContext}
 <link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/back.css" rel="stylesheet" type="text/css" media="all" />
 <script>
 	var DIVVIT_PLUGIN_SECURE_KEY = "{$secure_key|escape:'javascript':'UTF-8'}";
@@ -34,13 +34,15 @@
 <div class="panel">
 	<h3><i class="icon icon-credit-card"></i> {l s='Divvit' mod='divvit'}</h3>
 	{if $divvit_access_token && $divvit_frontendId}
-		<iframe src="{$app_url|escape:'htmlall':'UTF-8'}/prestashop?embedded=prestashop&email={$email|escape:'htmlall':'UTF-8'}&frontendId={$divvit_frontendId|escape:'htmlall':'UTF-8'}&__trackerToken={$divvit_access_token|escape:'htmlall':'UTF-8'}" width="100%" height="700" border="0" id="divvit_iframe"></iframe>
+		<iframe src="{$app_url|escape:'htmlall':'UTF-8'}/prestashop?embedded=prestashop&platform=prestashop&email={$email|escape:'htmlall':'UTF-8'}&firstName={$firstname|escape:'htmlall':'UTF-8'}&lastName={$lastname|escape:'htmlall':'UTF-8'}&url={$url|escape:'htmlall':'UTF-8'}&currency={$currency|escape:'htmlall':'UTF-8'}&timezone={$timezone|escape:'url'|escape:'htmlall':'UTF-8'}&industry=other&frontendId={$divvit_frontendId|escape:'htmlall':'UTF-8'}&__trackerToken={$divvit_access_token|escape:'htmlall':'UTF-8'}" width="100%" height="700" border="0" id="divvit_iframe"></iframe>
 	{else}
-		<iframe src="{$app_url|escape:'htmlall':'UTF-8'}/prestashop?embedded=prestashop&platform=prestashop&email={$email|escape:'htmlall':'UTF-8'}&firstName={$firstname|escape:'htmlall':'UTF-8'}&lastName={$lastname|escape:'htmlall':'UTF-8'}&url={$url|escape:'htmlall':'UTF-8'}&currency={$currency|escape:'htmlall':'UTF-8'}&timezone={$timezone|escape:'url'|escape:'htmlall':'UTF-8'}&industry=other" width="100%" height="700" border="0" id="divvit_iframe"></iframe>
+		<iframe src="{$app_url|escape:'htmlall':'UTF-8'}/prestashop?embedded=prestashop&platform=prestashop&email={$email|escape:'htmlall':'UTF-8'}&firstName={$firstname|escape:'htmlall':'UTF-8'}&lastName={$lastname|escape:'htmlall':'UTF-8'}&url={$url|escape:'htmlall':'UTF-8'}&currency={$currency|escape:'htmlall':'UTF-8'}&timezone={$timezone|escape:'url'|escape:'htmlall':'UTF-8'}&industry=other" width="100%" height="700" border="0" id="divvit_iframe"/>
 	{/if}
 </div>
 {else}
 	<div class="panel">
-	 <h3> {l s='Please select shop context to continue' mod='divvit'}
-    </h3>
+		<h3> {l s='Please select shop context to continue' mod='divvit'}</h3>
+		<p>You have Multistore feature enabled in your PrestaShop configuration. Divvit module must be configured for each shop individually.</p>
+		<p>To proceed please select shop context.</p>
+	</div>
 {/if}
