@@ -282,7 +282,7 @@ class Divvit extends Module
             DivvitQueryHelper::saveCustomerCookie($this->context->customer->id);
         }
         $divvit_frontendId = Configuration::get('DIVVIT_MERCHANT_ID');
-        $this->smarty->assign('DIVVIT_MERCHANT_ID', $divvit_frontendId[$this->context->shop->id]);
+        $this->smarty->assign('DIVVIT_MERCHANT_ID', $divvit_frontendId);
         $this->smarty->assign('DIVVIT_TAG_URL', self::$TAG_URL);
         $this->smarty->assign('DIVVIT_VERSION', $this->version);
 
